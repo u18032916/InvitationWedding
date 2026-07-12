@@ -154,7 +154,7 @@ body::before {
 
 /* 웨딩 정보 텍스트 */
 .wedding-info { width: 100%; color: #4A3E1B; }
-.wedding-info .names { font-family: 'MarioDS', sans-serif; font-size: 18px; color: #4A3E1B; margin-bottom: 10px; letter-spacing: 0.5px; display: inline-block; }
+.wedding-info .names { font-family: 'MarioDS', sans-serif; font-size: 15px; color: #4A3E1B; margin-bottom: 10px; letter-spacing: 0.5px; display: inline-block; }
 .animate-heartbeat { animation: textHeartbeat 2.2s infinite ease-in-out; }
 @keyframes textHeartbeat { 0%, 100% { transform: scale(1); } 35% { transform: scale(1.04); } 50% { transform: scale(0.98); } 65% { transform: scale(1.02); } }
 
