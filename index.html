@@ -49,19 +49,19 @@
             
             <div class="mario-info-container">
                 
-                <div class="mario-info-box">
+                <div class="mario-info-box animate-heartbeat">
                     <span class="box-label">DATE</span>
                     <div class="box-content">
                     <span class="main-text">2026년<br>9월 19일</span>
                     </div>
                 </div>
-                <div class="mario-info-box">
+                <div class="mario-info-box animate-heartbeat">
                     <span class="box-label">TIME</span>
                     <div class="box-content">
                     <span class="main-text">오후<br>12시 30분</span>
                     </div>
                 </div>
-                <div class="mario-info-box">
+                <div class="mario-info-box animate-heartbeat">
                     <span class="box-label">VENUE</span>
                     <div class="box-content">
                     <span class="main-text">드레스 가든<br>청담</span>
@@ -90,7 +90,7 @@
             <div class="char-icon">
                 <div class="icon-bomb"></div>
             </div>
-            <span class="indicator">지도</span>
+            <span class="indicator">오시는 길</span>
         </div>
         <div class="menu-btn-item" onclick="openModal('guestbook')">
             <div class="char-icon">
@@ -108,23 +108,39 @@
       <div class="modal-title">초대글</div>
       <button class="btn-close" onclick="closeModal('invitation')">&times;</button>
     </div>
-    <div class="modal-body scrollable">
-      <div class="content-box">
-        <p class="message">
-          오랜 시간의 기다림 끝에<br>저희 두 사람, 하나의 길을 걷고자 합니다.<br>그 시작의 자리에 소중한 분들을 초대합니다.
-        </p>
-        <div class="name-row">박재성 · 조훈 <span class="relation">의 장남</span> 박현준</div>
-        <div class="name-row">강미경 <span class="relation">의 장녀</span> 이나연</div>
+    
+    <div class="modal-body invitation-relative-body">
+      
+      <div class="content-box invitation-main-canvas">
+        <div class="canvas-inner-content">
+          <p class="message">
+            오랜 시간의 기다림 끝에<br>저희 두 사람,<br>하나의 길을 걷고자 합니다.<br>그 시작의 자리에<br>소중한 분들을 초대합니다.
+          </p>
+          <div class="name-row">박재성 · 조훈 <span class="relation">의 장남</span> 박현준</div>
+          <div class="name-row">강미경 <span class="relation">의 장녀</span> 이나연</div>
+        </div>
       </div>
-      <div class="section-divider">마음 전하실 곳</div>
-      <div class="account-item">
-        <div class="account-info">신랑 박현준<br>KB국민 718202-01-129470</div>
-        <button class="btn-copy" data-account="71820201129470">복사</button>
+      
+      <div class="account-slide-layer" id="accountLayer">
+        
+        <div class="slide-header" onclick="toggleAccountLayer()">
+          <span class="slide-title">마음 전하실 곳</span>
+          <span class="slide-arrow" id="slideArrow">▲</span>
+        </div>
+        
+        <div class="slide-content-scroll">
+          <div class="account-item">
+            <div class="account-info">신랑 박현준<br>KB국민 718202-01-129470</div>
+            <button class="btn-copy" data-account="71820201129470">복사</button>
+          </div>
+          <div class="account-item">
+            <div class="account-info">신부 이나연<br>KB국민 474502-01-455309</div>
+            <button class="btn-copy" data-account="47450201455309">복사</button>
+          </div>
+        </div>
+
       </div>
-      <div class="account-item">
-        <div class="account-info">신부 이나연<br>KB국민 474502-01-455309</div>
-        <button class="btn-copy" data-account="47450201455309">복사</button>
-      </div>
+
     </div>
   </div>
 
@@ -135,12 +151,27 @@
     </div>
     <div class="modal-body scrollable">
       <div class="gallery-main-container">
-        <img src="images/1.png" class="gallery-main active" id="galleryMainView">
+        <img src="images/1.webp" class="gallery-main active" id="galleryMainView">
       </div>
       <div class="gallery-swipe-container">
-        <img src="images/1.png" class="gallery-thumbnail active" onclick="changeGalleryMain('images/1.png', this)">
-        <img src="images/2.png" class="gallery-thumbnail" onclick="changeGalleryMain('images/2.png', this)">
-        <img src="images/3.png" class="gallery-thumbnail" onclick="changeGalleryMain('images/3.png', this)">
+        <img src="images/1.webp" class="gallery-thumbnail active" onclick="changeGalleryMain('images/1.webp', this)">
+        <img src="images/2.webp" class="gallery-thumbnail" onclick="changeGalleryMain('images/2.webp', this)">
+        <img src="images/3.webp" class="gallery-thumbnail" onclick="changeGalleryMain('images/3.webp', this)">
+        <img src="images/4.webp" class="gallery-thumbnail" onclick="changeGalleryMain('images/4.webp', this)">
+        <img src="images/5.webp" class="gallery-thumbnail" onclick="changeGalleryMain('images/5.webp', this)">
+        <img src="images/6.webp" class="gallery-thumbnail" onclick="changeGalleryMain('images/6.webp', this)">
+        <img src="images/7.webp" class="gallery-thumbnail" onclick="changeGalleryMain('images/7.webp', this)">
+        <img src="images/8.webp" class="gallery-thumbnail" onclick="changeGalleryMain('images/8.webp', this)">
+        <img src="images/9.webp" class="gallery-thumbnail" onclick="changeGalleryMain('images/9.webp', this)">
+        <img src="images/10.webp" class="gallery-thumbnail" onclick="changeGalleryMain('images/10.webp', this)">
+        <img src="images/11.webp" class="gallery-thumbnail" onclick="changeGalleryMain('images/11.webp', this)">
+        <img src="images/12.webp" class="gallery-thumbnail" onclick="changeGalleryMain('images/12.webp', this)">
+        <img src="images/13.webp" class="gallery-thumbnail" onclick="changeGalleryMain('images/13.webp', this)">
+        <img src="images/14.webp" class="gallery-thumbnail" onclick="changeGalleryMain('images/14.webp', this)">
+        <img src="images/15.webp" class="gallery-thumbnail" onclick="changeGalleryMain('images/15.webp', this)">
+        <img src="images/16.webp" class="gallery-thumbnail" onclick="changeGalleryMain('images/16.webp', this)">
+        <img src="images/17.webp" class="gallery-thumbnail" onclick="changeGalleryMain('images/17.webp', this)">
+        <img src="images/18.webp" class="gallery-thumbnail" onclick="changeGalleryMain('images/18.webp', this)">
       </div>
     </div>
   </div>
@@ -150,33 +181,64 @@
       <div class="modal-title">오시는 길</div>
       <button class="btn-close" onclick="closeModal('map')">&times;</button>
     </div>
-    <div class="modal-body scrollable">
+    <div class="modal-body scrollable map-modal-body">
       <div class="content-box map-box">
-        <div id="daumRoughmapContainer" class="map-placeholder">지도를 불러오는 중...</div>
-        <div class="transit-info mt-20">
+        
+        <div class="map-container-wrapper">
+          <div id="daumRoughmapContainer1781423724685" class="root_daum_roughmap root_daum_roughmap_landing"></div>
+        </div>
+        
+        <script charset="UTF-8" class="daum_roughmap_loader_script" src="https://ssl.daumcdn.net/dmaps/map_js_init/roughmapLoader.js"></script>
+
+        <div class="transit-info">
+          <p class="transit-title">버스</p>
+          <p class="transit-desc">
+              하차 정류장<br>
+              <b>청담역.경기고교</b>
+          </p>
+          
           <p class="transit-title">지하철</p>
-          <p class="transit-desc">7호선 청담역 13번 출구 바로 앞</p>
-          <p class="transit-title mt-10">자가용</p>
+          <p class="transit-desc">7호선 청담역<br>13번 출구</p>
+          
+          <p class="transit-title">자가용</p>
           <p class="transit-desc">내비게이션 "드레스가든" 입력<br>건물 지하 1층 주차장 이용 (2시간 무료)</p>
         </div>
+        
       </div>
     </div>
   </div>
 
   <div id="modal-guestbook" class="modal-overlay full-screen-modal">
-    <div class="modal-header">
-      <div class="modal-title">방명록</div>
-      <button class="btn-close" onclick="closeModal('guestbook')">&times;</button>
+  <div class="modal-header">
+    <div class="modal-title">방명록</div>
+    <button class="btn-close" onclick="closeModal('guestbook')">&times;</button>
+  </div>
+  
+  <div class="modal-body scrollable guestbook-flex-container">
+    <div class="guestbook-list-outer">
+      <div class="guestbook-list-container" id="guestbookList">
+        </div>
     </div>
-    <div class="modal-body scrollable">
-      <div class="guestbook-form">
-        <input type="text" id="guestName" placeholder="이름을 입력해주세요">
-        <textarea id="guestMsg" placeholder="축하의 메시지를 남겨주세요"></textarea>
-        <button class="btn-submit" onclick="submitGuestMessage()">코인 남기기 (등록)</button>
-      </div>
-      <div class="guestbook-list-container" id="guestbookList"></div>
+
+    <div class="guestbook-form">
+      <input type="text" id="guestName" placeholder="이름을 입력해주세요">
+      <textarea id="guestMsg" placeholder="축하의 메시지를 남겨주세요"></textarea>
+      <button class="btn-submit" onclick="submitGuestMessage()">등록</button>
     </div>
   </div>
+</div>
+
+<div id="guestModal" class="modal-overlay guest-detail-modal" style="display: none;">
+  <div class="modal-content">
+    <div class="modal-header">
+      <div class="modal-title" id="modalGuestName">이름</div>
+      <button class="btn-close" onclick="closeGuestModal()">&times;</button>
+    </div>
+    <div class="modal-body">
+      <p id="modalGuestMsg">축하 메시지 내용</p>
+    </div>
+  </div>
+</div>
 
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
