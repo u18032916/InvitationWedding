@@ -1,58 +1,65 @@
-// 전역 변수 캐싱
 let audioCoin, audioBgm, introCinematic;
 let galleryMainImg;
 
 document.addEventListener("DOMContentLoaded", () => {
-  // DOM 캐싱
   audioCoin = document.getElementById('audioCoin');
   audioBgm = document.getElementById('audioBgm');
   introCinematic = document.getElementById('introCinematic');
   galleryMainImg = document.getElementById('galleryMainView');
 
-  // 1. 인트로 세션 제어
   const hasEntered = sessionStorage.getItem('mario-intro-passed');
   if (hasEntered === 'true') {
     if (introCinematic) introCinematic.remove();
   } else {
-    // History API: 초기 상태 push
-    history.replaceState({ page: 'main' }, '', '#main');
+    // History API: 초기 상태 push (에러 방지)
+    if(window.history.replaceState) {
+      history.replaceState({ page: 'main' }, '', '#main');
+    }
     
-    // ? 박스 클릭 이벤트
     const qBox = document.getElementById('questionBox');
     if (qBox) {
       qBox.addEventListener('click', enterDashboard);
     }
   }
 
-  // 2. 계좌 복사 이벤트 (이벤트 위임 활용)
+  // 🌟 계좌 복사 이벤트 예외 처리 (인앱 브라우저 호환성 강화)
   document.querySelectorAll('.btn-copy').forEach(btn => {
     btn.addEventListener('click', function() {
       const accountInfo = this.getAttribute('data-account');
-      navigator.clipboard.writeText(accountInfo).then(() => {
-        const originalText = this.innerText;
-        this.innerText = '완료!';
-        this.style.backgroundColor = '#4CAF50';
-        setTimeout(() => {
-          this.innerText = originalText;
-          this.style.backgroundColor = '#333';
-        }, 1500);
-      });
+      
+      // 클립보드 API가 지원되지 않는 구형 브라우저 대비
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(accountInfo).then(() => {
+          showCopySuccess(this);
+        }).catch(err => {
+          alert('복사에 실패했습니다. 직접 복사해주세요: ' + accountInfo);
+        });
+      } else {
+        // Fallback
+        alert('계좌번호: ' + accountInfo + '\n(클립보드를 지원하지 않는 브라우저입니다.)');
+      }
     });
   });
 
-  // D-Day 계산기 실행
+  function showCopySuccess(button) {
+    const originalText = button.innerText;
+    button.innerText = '완료!';
+    button.style.backgroundColor = '#4CAF50';
+    setTimeout(() => {
+      button.innerText = originalText;
+      button.style.backgroundColor = '#333';
+    }, 1500);
+  }
+
   calculateDDay();
 
-  // 3. History API 기반 모달 뒤로가기 제어
   window.addEventListener('popstate', (e) => {
-    // 모든 모달을 닫는 로직 실행
     document.querySelectorAll('.full-screen-modal.open').forEach(modal => {
       closeModalUI(modal.id.replace('modal-', ''));
     });
   });
 });
 
-// D-Day 계산 함수 분리 및 정밀 매칭
 function calculateDDay() {
   const weddingDate = new Date('2026-09-19');
   const today = new Date();
@@ -75,15 +82,11 @@ function calculateDDay() {
   }
 }
 
-// ==========================================
-// 인트로 인터랙션
-// ==========================================
 function enterDashboard() {
   if (audioCoin) {
     audioCoin.currentTime = 0;
     audioCoin.play().catch(e => console.log('Audio error:', e));
   }
-
   if (introCinematic) {
     introCinematic.classList.add('fade-out');
     setTimeout(() => {
@@ -96,18 +99,13 @@ function enterDashboard() {
   sessionStorage.setItem('mario-intro-passed', 'true');
 }
 
-// ==========================================
-// 모달 (SPA 스테이지) 제어 로직
-// ==========================================
 function openModal(type) {
   const modal = document.getElementById(`modal-${type}`);
   if (modal) {
     document.body.classList.add('modal-open');
     modal.style.display = 'flex';
-    
     modal.offsetHeight; 
     modal.classList.add('open');
-
     history.pushState({ modal: type }, '', `#${type}`);
   }
 }
@@ -133,12 +131,8 @@ function closeModalUI(type) {
   }
 }
 
-// ==========================================
-// 갤러리 로직
-// ==========================================
 function changeGalleryMain(src, element) {
   if (!galleryMainImg) return;
-  
   galleryMainImg.style.opacity = '0.5';
   setTimeout(() => {
     galleryMainImg.src = src;
@@ -150,9 +144,7 @@ function changeGalleryMain(src, element) {
   element.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
 }
 
-// ==========================================
-// Firebase 방명록 로직
-// ==========================================
+// 🌟 Firebase 방명록 로직 (중복 초기화 에러 방어 코드 추가)
 const firebaseConfig = {
   apiKey: "XXX",
   authDomain: "XXX",
@@ -163,7 +155,10 @@ const firebaseConfig = {
   appId: "XXX"
 };
 
-firebase.initializeApp(firebaseConfig);
+// firebase.apps.length가 0일 때만 초기화 (핫리로딩/에러 방지)
+if (!firebase.apps.length) {
+  firebase.initializeApp(firebaseConfig);
+}
 const database = firebase.database();
 
 function submitGuestMessage() {
@@ -221,7 +216,7 @@ database.ref('mario_guestbook').orderByChild('timestamp').on('value', function(s
 
     newCard.appendChild(nameDiv);
     newCard.appendChild(msgDiv);
-    cardsArray.unshift(newCard);
+    cardsArray.unshift(newCard); // 최신 글이 위로 오도록 배열 앞쪽에 삽입
   });
 
   cardsArray.forEach(card => listContainer.appendChild(card));
