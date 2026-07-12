@@ -54,7 +54,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (document.body.classList.contains('modal-open')) {
       // 스크롤이나 스와이프가 "반드시" 허용되어야 하는 내부 컨테이너들
       const isAllowedScrollArea = e.target.closest(
-        '.gallery-swipe-container, .guestbook-list-outer, .slide-content-scroll, .guest-detail-modal .modal-body, .map-box'
+        '.gallery-swipe-container, .guestbook-list-outer, .slide-content-scroll, .guest-detail-modal .modal-body, .map-container-wrapper'
       );
       
       // 위 요소들 밖에서 일어나는 모든 터치 스크롤 차단 (빈 화면 위아래로 끌어당길 때 흔들림 방지)
