@@ -21,7 +21,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // 🌟 계좌 복사 이벤트 예외 처리
+  // 계좌 복사 이벤트 처리
   document.querySelectorAll('.btn-copy').forEach(btn => {
     btn.addEventListener('click', function() {
       const accountInfo = this.getAttribute('data-account');
@@ -49,19 +49,32 @@ document.addEventListener("DOMContentLoaded", () => {
 
   calculateDDay();
 
-  // 🌟 [통합] 브라우저 뒤로가기(popstate) 통합 제어 구역
+  // 🌟 [수정] 모달 위아래 흔들림(바운스) 원천 차단 + 필수 스크롤 영역만 허용
+  document.addEventListener('touchmove', function(e) {
+    if (document.body.classList.contains('modal-open')) {
+      // 스크롤이나 스와이프가 "반드시" 허용되어야 하는 내부 컨테이너들
+      const isAllowedScrollArea = e.target.closest(
+        '.gallery-swipe-container, .guestbook-list-outer, .slide-content-scroll, .guest-detail-modal .modal-body, .map-box'
+      );
+      
+      // 위 요소들 밖에서 일어나는 모든 터치 스크롤 차단 (빈 화면 위아래로 끌어당길 때 흔들림 방지)
+      if (!isAllowedScrollArea) {
+        e.preventDefault();
+      }
+    }
+  }, { passive: false });
+
+  // 브라우저 뒤로가기(popstate) 통합 제어
   window.addEventListener('popstate', (e) => {
-  // 해시 상태를 체크하여 상세 모달만 먼저 닫힐 수 있도록 처리
-  const guestDetailModal = document.getElementById('guestModal');
-  
-  if (guestDetailModal && guestDetailModal.classList.contains('open') && location.hash !== '#guestbook-detail') {
-    closeGuestModalUI();
-  } else {
-    // 상세 모달이 열려있지 않은 상태에서 뒤로가기가 오면 기본 모달들을 닫음
-    document.querySelectorAll('.full-screen-modal.open').forEach(modal => {
-      closeModalUI(modal.id.replace('modal-', ''));
-    });
-  }
+    const guestDetailModal = document.getElementById('guestModal');
+    
+    if (guestDetailModal && guestDetailModal.classList.contains('open') && location.hash !== '#guestbook-detail') {
+      closeGuestModalUI();
+    } else {
+      document.querySelectorAll('.full-screen-modal.open').forEach(modal => {
+        closeModalUI(modal.id.replace('modal-', ''));
+      });
+    }
   });
 
   // 물음표 상자 코인 효과 이벤트
@@ -79,7 +92,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // 🌟 [통합] DOM 로드가 끝난 후 Firebase 실시간 리스너를 안전하게 부착
+  // Firebase 실시간 리스너 실행
   initFirebaseGuestbook();
 });
 
@@ -185,7 +198,7 @@ function changeGalleryMain(src, element) {
 }
 
 // ========================================================
-// 🌟 Firebase 방명록 및 상세 모달 통합 로직
+// Firebase 연동 로직
 // ========================================================
 const firebaseConfig = {
   apiKey: "AIzaSyCYOyUHLIilpamdYoBdf2LI6e2_6hSWk60",
@@ -226,7 +239,6 @@ function submitGuestMessage() {
       targetAudioCoin.play().catch(()=>{});
     }
 
-    // 💡 경로 안정성을 위해 원래 쓰시던 'guestbook'으로 통합 관리합니다.
     const guestbookRef = database.ref('guestbook');
     guestbookRef.push({
       name: name,
@@ -239,7 +251,7 @@ function submitGuestMessage() {
   }
 }
 
-// 실시간 감지기 및 화면 출력 초기화 함수
+// 실시간 데이터베이스 연동 및 카드 꽂기 (중복 삭제 후 단일화)
 function initFirebaseGuestbook() {
   database.ref('guestbook').orderByChild('timestamp').on('value', function(snapshot) {
     const listContainer = document.getElementById('guestbookList');
@@ -269,7 +281,6 @@ function initFirebaseGuestbook() {
       newCard.appendChild(dividerDiv);
       newCard.appendChild(msgDiv);
 
-      // 카드 클릭 시 상세 팝업 모달 띄우기 (XSS 안전 바인딩)
       newCard.addEventListener('click', function() {
         openGuestModal(data.name, data.msg);
       });
@@ -281,7 +292,7 @@ function initFirebaseGuestbook() {
   });
 }
 
-// 🌟 [추가] 방명록 전용 상세 보기 모달 제어 (모달 위의 모달)
+// 방명록 상세 보기 모달 제어
 function openGuestModal(name, msg) {
   const modal = document.getElementById('guestModal');
   const modalName = document.getElementById('modalGuestName');
@@ -291,9 +302,7 @@ function openGuestModal(name, msg) {
     modalName.innerText = name;
     modalMsg.innerText = msg;
     
-    // 묻히지 않도록 강제로 스타일 부여 및 open 클래스 추가
     modal.style.setProperty('display', 'flex', 'important');
-    
     history.pushState({ guestModal: true }, '', '#guestbook-detail');
     
     setTimeout(() => { 
@@ -322,47 +331,4 @@ function closeGuestModalUI() {
       }
     }, 300);
   }
-}
-
-// 실시간 데이터베이스 연동 및 카드 꽂기
-function initFirebaseGuestbook() {
-  database.ref('guestbook').orderByChild('timestamp').on('value', function(snapshot) {
-    const listContainer = document.getElementById('guestbookList');
-    if (!listContainer) return;
-
-    listContainer.innerHTML = '';
-    const cardsArray = [];
-
-    snapshot.forEach(function(childSnapshot) {
-      const data = childSnapshot.val();
-      
-      const newCard = document.createElement('div');
-      newCard.className = 'guest-card';
-      
-      const nameDiv = document.createElement('div');
-      nameDiv.className = 'guest-card-name';
-      nameDiv.textContent = data.name;
-
-      const dividerDiv = document.createElement('div');
-      dividerDiv.className = 'guest-card-divider';
-
-      const msgDiv = document.createElement('div');
-      msgDiv.className = 'guest-card-msg';
-      msgDiv.textContent = data.msg;
-
-      newCard.appendChild(nameDiv);
-      newCard.appendChild(dividerDiv);
-      newCard.appendChild(msgDiv);
-
-      // 카드 터치 시 모달 이벤트 바인딩
-      newCard.addEventListener('click', function() {
-        openGuestModal(data.name, data.msg);
-      });
-
-      // 💡 2줄 바둑판 가로 배열에서 최신순이 앞으로 오게 하려면 정렬을 유지해야 합니다.
-      cardsArray.unshift(newCard); 
-    });
-
-    cardsArray.forEach(card => listContainer.appendChild(card));
-  });
 }
