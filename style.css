@@ -143,11 +143,120 @@ body::before {
   overflow: hidden;
 }
 
-.center-photo-wrap { width: 100%; flex: 1; min-height: 0; display: flex; justify-content: center; align-items: flex-start; }
+.center-photo-wrap {
+  width: 100%;
+  flex: 1;
+  min-height: 0;
+
+  display:flex;
+  justify-content:center;
+  align-items:flex-start;
+
+  perspective:1200px;
+}
 .center-photo { width: 100%; max-height: 100%; aspect-ratio: 3 / 4; border-radius: 12px; border: 3px solid #4A3E1B; object-fit: cover; object-position: center 30%; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+.photo-wrapper {
+    width:100%;
+    height:100%;
+    transform-style:preserve-3d;
+}
+.photo-wrapper.idle {
+    animation:photoIdle 3s ease-in-out infinite;
+}
+.photo-wrapper.stop-idle {
+    animation:none;
+}
+.photo-flip-card {
+    position:relative;
+    width:100%;
+    height:100%;
+    transform-style:preserve-3d;
+    transition:transform .75s cubic-bezier(.25,.8,.25,1);
+    cursor:pointer;
+    will-change:transform;
+    transform:translateZ(0) rotateY(0deg);
+}
+.photo-face {
+    position:absolute;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    backface-visibility:hidden;
+    transform-style:preserve-3d;
+}
+.photo-front{
+    transform:rotateY(0deg);
+}
+.photo-back{
+    transform:rotateY(180deg);
+}
+.photo-face .center-photo{
+    width:100%;
+    height:100%;
+}
+.photo-back {
+    position:relative;
+}
+.back-overlay {
+    position:absolute;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,0.45);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+.back-message {
+    margin: 0 0 10px 0;
+    color: #ffffff;
+    font-family: 'Helvetica Neue', AppleSDGothicNeo, sans-serif;
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 1;
+    letter-spacing: 4px;
+    text-shadow: 1px 1px 10px rgba(0, 0, 0, 0.4);
+}
+.photo-inner {
+    position:relative;
+    width:100%;
+    height:100%;
+    overflow:hidden;
+    border-radius:12px;
+}
+@keyframes photoIdle {
+    0%,100% {
+        transform:
+        rotateY(0deg);
+    }
+    12% {
+        transform:
+        rotateY(-4deg);
+    }
+    25% {
+        transform:
+        rotateY(3deg);
+    }
+    36% {
+        transform:
+        rotateY(-3deg);
+    }
+    48%{
+        transform:rotateY(2deg);
+    }
+    60%{
+        transform:rotateY(0deg);
+    }
+}
 .middle-info-stage { width: 100%; flex-shrink: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; margin-top: 15px; margin-bottom: 5px; }
 .d-day-badge { background-color: #FFD700; color: #E60012; font-family: 'MarioDS', sans-serif; font-weight: bold; padding: 4px 14px; border-radius: 20px; border: 2px solid #ffffff; font-size: 11px; box-shadow: 0 3px 0 #B71C1C; margin-bottom: 10px; }
-
+.d-day-badge.red-mode {
+    background-color:#E60012;
+    color:#FFD700;
+    box-shadow:0 3px 0 #e7c400;
+}
 /* 캐릭터 및 애니메이션 등 중복 방지 (기존 코드 유지) */
 .mario-luigi-track { position: relative; width: 100%; max-width: 360px; display: flex; justify-content: center; align-items: center; overflow: visible; }
 .mario-mover { position: absolute; bottom: 10px; left: -15%; width: 16px; height: 24px; z-index: 5; }
@@ -167,8 +276,30 @@ body::before {
 
 .wedding-info { width: 100%; color: #4A3E1B; }
 .wedding-info .names { font-family: 'MarioDS', sans-serif; font-size: 18px; color: #4A3E1B; margin-bottom: 10px; letter-spacing: 0.5px; display: inline-block; }
+.names.mario-red {
+    color:#E60012;
+}
+.names.luigi-green {
+    color:#00A040;
+}
 .animate-heartbeat { animation: textHeartbeat 2.2s infinite ease-in-out; }
 @keyframes textHeartbeat { 0%, 100% { transform: scale(1); } 35% { transform: scale(1.04); } 50% { transform: scale(0.98); } 65% { transform: scale(1.02); } }
+.touch-pop {
+    animation:
+    textHeartbeat 2.2s infinite ease-in-out,
+    touchPop 0.15s ease-out;
+}
+@keyframes touchPop {
+    0% {
+        scale:1;
+    }
+    50% {
+        scale:0.92;
+    }
+    100% {
+        scale:1;
+    }
+}
 
 .mario-info-container { display: flex; gap: 8px; width: 100%; max-width: 360px; margin: 0 auto; box-sizing: border-box; }
 .mario-info-box { flex: 1; background-color: #ffffff; border-radius: 12px; border: 2.5px solid #4A3E1B; box-shadow: 0 3px 0 #4A3E1B; padding: 10px 4px; display: flex; flex-direction: column; align-items: center; position: relative; min-height: 70px; justify-content: center; box-sizing: border-box; cursor: pointer; transition: transform 0.1s, box-shadow 0.1s; }

@@ -6,6 +6,8 @@ document.addEventListener("DOMContentLoaded", () => {
   audioBgm = document.getElementById('audioBgm');
   introCinematic = document.getElementById('introCinematic');
   galleryMainImg = document.getElementById('galleryMainView');
+  const preloadBackImage = new Image();
+  preloadBackImage.src = "images/BACK.webp";
 
   const hasEntered = sessionStorage.getItem('mario-intro-passed');
   if (hasEntered === 'true') {
@@ -19,6 +21,99 @@ document.addEventListener("DOMContentLoaded", () => {
     if (qBox) {
       qBox.addEventListener('click', enterDashboard);
     }
+  }
+
+  const flipCard = document.getElementById("photoFlipCard");
+  const photoWrapper = document.querySelector(".photo-wrapper");
+  let currentRotation = 0;
+  let isFlipping = false;
+  if(photoWrapper){
+      // 최초 idle 시작
+      photoWrapper.classList.add("idle");
+  }
+  if(flipCard){
+      flipCard.addEventListener("click",()=>{
+          if(isFlipping) return;
+          isFlipping=true;
+          // 첫 클릭 순간 idle 종료
+          if(photoWrapper){
+              photoWrapper.classList.remove("idle");
+              photoWrapper.classList.add("stop-idle");
+          }
+          if(audioCoin){
+              audioCoin.currentTime=0;
+              audioCoin.play().catch(()=>{});
+          }
+          currentRotation +=180;
+          flipCard.style.transform =
+          `translateZ(0) rotateY(${currentRotation}deg)`;
+      });
+      flipCard.addEventListener("transitionend",()=>{
+          isFlipping=false;
+      });
+  }
+
+  const dDayBadge = document.getElementById('dDayBadge');
+  if(dDayBadge){
+      let dDayRedMode = false;
+      dDayBadge.addEventListener('click',()=>{
+        // 코인 사운드
+        if (audioCoin) {
+            audioCoin.currentTime = 0;
+            audioCoin.play().catch(e => {
+                console.log('Audio play blocked:', e);
+            });
+        }
+        // 클릭 애니메이션 재실행
+        dDayBadge.classList.remove('touch-pop');
+        requestAnimationFrame(() => {
+            dDayBadge.classList.add('touch-pop');
+        });
+        // 색상 변경
+        dDayRedMode = !dDayRedMode;
+        dDayBadge.classList.toggle(
+            'red-mode',
+            dDayRedMode
+        );
+    });
+  }
+  // 이름 색상 변경
+  const weddingNames = document.querySelector('.names');
+  if(weddingNames){
+      let nameColorStep = 0;
+      weddingNames.addEventListener('click',()=>{
+          // 코인 사운드
+          if (audioCoin) {
+              audioCoin.currentTime = 0;
+              audioCoin.play().catch(e => {
+                  console.log('Audio play blocked:', e);
+              });
+          }
+          // 클릭 애니메이션 재실행
+          weddingNames.classList.remove('touch-pop');
+          requestAnimationFrame(() => {
+              weddingNames.classList.add('touch-pop');
+          });
+          // 색상 변경
+          nameColorStep++;
+          if(nameColorStep > 2){
+              nameColorStep = 0;
+          }
+          weddingNames.classList.remove(
+              'mario-red',
+              'luigi-green'
+          );
+          if(nameColorStep === 1){
+              weddingNames.classList.add(
+                  'mario-red'
+              );
+          }
+          if(nameColorStep === 2){
+              weddingNames.classList.add(
+                  'luigi-green'
+              );
+          }
+      });
   }
 
   // 계좌 복사 이벤트 처리
@@ -78,23 +173,31 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // 물음표 상자 코인 효과 이벤트
-  const infoBoxes = document.querySelectorAll('.mario-info-box');
-  infoBoxes.forEach(box => {
-    box.addEventListener('click', () => {
-      if (audioCoin) {
-        audioCoin.currentTime = 0;
-        audioCoin.play().catch(e => console.log('Audio play blocked:', e));
-      }
-      const coin = document.createElement('div');
-      coin.className = 'box-jump-coin';
-      box.appendChild(coin);
-      setTimeout(() => { coin.remove(); }, 500);
-    });
-  });
+  initInfoBoxCoin();
 
   // Firebase 실시간 리스너 실행
   initFirebaseGuestbook();
 });
+
+function initInfoBoxCoin(){
+    const infoBoxes = document.querySelectorAll('.mario-info-box');
+    infoBoxes.forEach(box => {
+        box.addEventListener('click', () => {
+            if (audioCoin) {
+                audioCoin.currentTime = 0;
+                audioCoin.play().catch(e =>
+                    console.log('Audio play blocked:', e)
+                );
+            }
+            const coin = document.createElement('div');
+            coin.className = 'box-jump-coin';
+            box.appendChild(coin);
+            setTimeout(() => {
+                coin.remove();
+            }, 500);
+        });
+    });
+}
 
 function calculateDDay() {
   const weddingDate = new Date('2026-09-19');
